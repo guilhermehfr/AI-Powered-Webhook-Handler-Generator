@@ -1,0 +1,1 @@
+ALTER TABLE "webhooks" RENAME COLUMN "statuscode" TO "status_code";
