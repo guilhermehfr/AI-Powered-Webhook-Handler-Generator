@@ -15,6 +15,7 @@ import { listWebhooks } from './routes/list-webhooks';
 import { getWebhook } from './routes/get-webhook';
 import { deleteWebhook } from './routes/delete-webhook';
 import { captureWebhook } from './routes/capture-webhook';
+import { generateHandler } from './routes/generate-handler';
 
 const app = fastify().withTypeProvider<ZodTypeProvider>();
 app.setValidatorCompiler(validatorCompiler);
@@ -41,6 +42,7 @@ app.register(listWebhooks);
 app.register(getWebhook);
 app.register(deleteWebhook);
 app.register(captureWebhook);
+app.register(generateHandler);
 
 app.register(scalarApiReference, {
   routePrefix: '/docs',
