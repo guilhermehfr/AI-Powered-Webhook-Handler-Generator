@@ -3,8 +3,8 @@ import { z } from 'zod';
 import { webhooks } from '@/db/schema/webhooks';
 import { db } from '@/db';
 import { inArray } from 'drizzle-orm';
-import { generateText } from 'ai';
-import { google } from '@ai-sdk/google';
+import { env } from '@/env';
+import Groq from 'groq-sdk';
 
 export const generateHandler: FastifyPluginAsyncZod = async (app) => {
   app.post(
@@ -35,29 +35,40 @@ export const generateHandler: FastifyPluginAsyncZod = async (app) => {
 
       const webhooksBodies = result.map((item) => item.body).join('\n\n');
 
-      /* TODO: Switch model to github copilot */
+      const groq = new Groq({ apiKey: env.GROQ_API_KEY });
 
-      // const { text } = await generateText({
-      //   model: google('gemini-2.0-flash'),
-      //   prompt: `
-      //     You are an expert TypeScript developer. Your task is to generate a TypeScript handler function for incoming webhook events.
-      //     You will receive the body of several webhook requests, each representing a different event type.
+      const response = await groq.chat.completions.create({
+        messages: [
+          {
+            role: 'user',
+            content: `
+          Generate a TypeScript function that serves as a handler for multiple webhook events. The function should accept a request body containing different webhook events and validate the incoming data using Zod. Each webhook event type should have its own schema defined using Zod.
+          The function should handle the following webhook events with example payloads:
+          """
+          ${webhooksBodies}
+          """
+          The generated code should include:
+          -  A main function that takes the webhook request body as input.
+          -  Zod schemas for each event type.
+          -  Logic to handle each event based on the validated data.
+          -  Appropriate error handling for invalid payloads.
+          ---
+          You can use this prompt to request the TypeScript code you need for handling webhook events with Zod validation.
+          return only the code generate, do not include any explanations or additional text.
+        `.trim(),
+          },
+        ],
+        model: 'llama-3.1-8b-instant',
+      });
 
-      //     Your output must be a single TypeScript file that:
-      //     - Defines a Zod schema for each event type based on the provided payload examples.
-      //     - Exports a handler function that receives a request body, determines the event type, validates it using the appropriate Zod schema, and processes each event accordingly.
-      //     - Handles all possible event types present in the payloads.
-      //     - Includes type definitions and Zod validation for type safety.
-      //     - The code should be ready to use in a Node.js/TypeScript project.
+      const raw = response.choices[0].message.content;
 
-      //     Here are the example webhook event payloads:
-      //     ${webhooksBodies}
+      const text = raw
+        .replace(/^```(?:typescript|ts)?\n?/m, '')
+        .replace(/```$/m, '')
+        .trim();
 
-      //     Return only the code within \`\`\`, typescript or any other markdown symboils. Do not include any explanations or comments.
-      //     `.trim(),
-      // });
-
-      await reply.status(201).send({ code: `code` });
+      await reply.status(201).send({ code: text });
     },
   );
 };

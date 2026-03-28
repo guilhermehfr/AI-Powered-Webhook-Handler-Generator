@@ -7,7 +7,6 @@ import {
 } from 'fastify-type-provider-zod';
 import { fastifyCors } from '@fastify/cors';
 import { fastifySwagger } from '@fastify/swagger';
-import scalarApiReference from '@scalar/fastify-api-reference';
 
 import { env } from './env';
 
@@ -43,10 +42,6 @@ app.register(getWebhook);
 app.register(deleteWebhook);
 app.register(captureWebhook);
 app.register(generateHandler);
-
-app.register(scalarApiReference, {
-  routePrefix: '/docs',
-});
 
 app.listen({ port: env.PORT }).then(() => {
   console.log('- HTTP Server running on http://localhost:3333');

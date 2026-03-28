@@ -1,8 +1,7 @@
 import { faker } from '@faker-js/faker';
-import { db } from '.';
-import { webhooks } from './schema';
+import { db } from './index.js';
+import { webhooksList } from './schema/index.js';
 
-// Eventos comuns do Stripe
 const stripeEvents = [
   'charge.succeeded',
   'charge.failed',
@@ -26,12 +25,13 @@ const stripeEvents = [
   'payment_method.detached',
 ];
 
-function generateStripeWebhook() {
-  const eventType = faker.helpers.arrayElement(stripeEvents);
+const httpMethods = ['POST', 'PUT'] as const;
+type HttpMethod = (typeof httpMethods)[number];
+
+function generateBody(eventType: string): string {
   const amount = faker.number.int({ min: 1000, max: 50000 });
   const currency = faker.helpers.arrayElement(['usd', 'eur', 'brl']);
 
-  // Corpo do webhook simulando estrutura do Stripe
   const body = {
     id: `evt_${faker.string.alphanumeric(24)}`,
     object: 'event',
@@ -50,8 +50,8 @@ function generateStripeWebhook() {
                 ? `cus_${faker.string.alphanumeric(14)}`
                 : `cs_${faker.string.alphanumeric(24)}`,
         object: eventType.split('.')[0],
-        amount: amount,
-        currency: currency,
+        amount,
+        currency,
         customer: `cus_${faker.string.alphanumeric(14)}`,
         description: faker.company.catchPhrase(),
         status: eventType.includes('failed') ? 'failed' : 'succeeded',
@@ -60,8 +60,22 @@ function generateStripeWebhook() {
     },
   };
 
-  // Headers típicos do Stripe
-  const headers = {
+  return JSON.stringify(body, null, 2);
+}
+
+function generateStatusCode(): number {
+  const isSuccess = faker.number.int({ min: 1, max: 10 }) <= 8;
+  if (isSuccess) return 200;
+
+  return faker.helpers.arrayElement([400, 401, 404, 422, 500]);
+}
+
+function generateStripeWebhook() {
+  const eventType = faker.helpers.arrayElement(stripeEvents);
+  const method = faker.helpers.arrayElement(httpMethods);
+  const bodyString = generateBody(eventType);
+
+  const headers: Record<string, string> = {
     'content-type': 'application/json',
     'stripe-signature': `t=${Math.floor(Date.now() / 1000)},v1=${faker.string.alphanumeric(64)}`,
     'user-agent': 'Stripe/1.0 (+https://stripe.com/docs/webhooks)',
@@ -76,17 +90,15 @@ function generateStripeWebhook() {
     }),
   };
 
-  const bodyString = JSON.stringify(body, null, 2);
-
   return {
-    method: 'POST',
+    method,
     pathname: '/webhooks/stripe',
     ip: faker.internet.ipv4(),
-    statusCode: faker.helpers.arrayElement([200, 200, 200, 200, 500]), // Maioria 200
+    statusCode: generateStatusCode(),
     contentType: 'application/json',
     contentLength: Buffer.byteLength(bodyString),
     queryParams: null,
-    headers: headers,
+    headers,
     body: bodyString,
     createdAt: faker.date.recent({ days: 30 }),
   };
@@ -95,17 +107,15 @@ function generateStripeWebhook() {
 async function seed() {
   console.log('🌱 Seeding database...');
 
-  await db.delete(webhooks);
+  await db.delete(webhooksList.webhooks);
 
-  // Gerar 60 webhooks
   const webhooksData = Array.from({ length: 60 }, () =>
     generateStripeWebhook(),
   );
 
-  // Ordenar por data de criação (mais antigos primeiro)
   webhooksData.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
-  await db.insert(webhooks).values(webhooksData);
+  await db.insert(webhooksList.webhooks).values(webhooksData);
 
   console.log('✅ Database seeded successfully with 60 Stripe webhooks!');
 }
