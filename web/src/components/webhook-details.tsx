@@ -4,6 +4,8 @@ import { WebhookDetailHeader } from './webhook-detail-header';
 import { SectionTitle } from './section-title';
 import { SectionDataTable } from './section-data-table';
 import { CodeBlock } from './ui/code-block';
+import { CopyIconButton } from './ui/copy-icon-button';
+import { twMerge } from 'tailwind-merge';
 
 interface WebhookDetailsProps {
   id: string;
@@ -49,7 +51,14 @@ export function WebhookDetails({ id }: WebhookDetailsProps) {
         ip={data.ip}
         createdAt={data.createdAt}
       />
-      <div className="flex-1 overflow-y-auto">
+      <div
+        className={twMerge(
+          'flex-1 overflow-y-auto sm:[&::-webkit-scrollbar]:w-4 [&::-webkit-scrollbar]:w-4 ',
+          '[&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-zinc-700',
+          '[&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-zinc-700/40',
+          '[&::-webkit-scrollbar-thumb]:bg-zinc-700 [&::-webkit-scrollbar-thumb]:rounded-full',
+        )}
+      >
         <div className="space-y-6 p-6">
           <div className="space-y-4">
             <SectionTitle>Request Overview</SectionTitle>
@@ -71,7 +80,9 @@ export function WebhookDetails({ id }: WebhookDetailsProps) {
           {!!data.body && (
             <div className="space-y-4">
               <SectionTitle>Request Body</SectionTitle>
-              <CodeBlock code={data.body} />
+              <CodeBlock code={data.body} language="json">
+                <CopyIconButton textToCopy={data.body} />
+              </CodeBlock>
             </div>
           )}
         </div>

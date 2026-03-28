@@ -12,7 +12,7 @@ function Index() {
           No webhook selected.
         </h3>
         <p className="text-zinc-400 text-sm max-w-md">
-          Select a webhook from the sidebar to view its details.
+          Click on a webhook from the sidebar to view its details.
         </p>
       </div>
     </div>
