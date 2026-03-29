@@ -12,7 +12,7 @@
       "ESNext.Iterator",
       "ESNext.Promise"
     ],
-    "module": "Node16",
+    "module": "nodenext",
     "esModuleInterop": true,
     "skipLibCheck": true,
     "moduleResolution": "node16",

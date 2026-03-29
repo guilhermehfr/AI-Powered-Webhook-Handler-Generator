@@ -1,7 +1,8 @@
-import { db } from '@/db';
-import { webhooks } from '@/db/schema/webhooks';
 import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { uuidv7, z } from 'zod';
+
+import { db } from '@/db';
+import { webhooks } from '@/db/schema/webhooks';
 
 export const captureWebhook: FastifyPluginAsyncZod = async (app) => {
   app.all(

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker';
-import { db } from './index.js';
-import { webhooksList } from './schema/index.js';
+import { db } from './index';
+import { webhooks } from './schema/index';
 
 const stripeEvents = [
   'charge.succeeded',
@@ -72,7 +72,7 @@ function generateStatusCode(): number {
 
 function generateStripeWebhook() {
   const eventType = faker.helpers.arrayElement(stripeEvents);
-  const method = faker.helpers.arrayElement(httpMethods);
+  const method: HttpMethod = faker.helpers.arrayElement(httpMethods);
   const bodyString = generateBody(eventType);
 
   const headers: Record<string, string> = {
@@ -107,7 +107,11 @@ function generateStripeWebhook() {
 async function seed() {
   console.log('🌱 Seeding database...');
 
-  await db.delete(webhooksList.webhooks);
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
+    throw new Error('Seed command cannot be run in production environment.');
+  }
+
+  await db.delete(webhooks);
 
   const webhooksData = Array.from({ length: 60 }, () =>
     generateStripeWebhook(),
@@ -115,7 +119,7 @@ async function seed() {
 
   webhooksData.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime());
 
-  await db.insert(webhooksList.webhooks).values(webhooksData);
+  await db.insert(webhooks).values(webhooksData);
 
   console.log('✅ Database seeded successfully with 60 Stripe webhooks!');
 }

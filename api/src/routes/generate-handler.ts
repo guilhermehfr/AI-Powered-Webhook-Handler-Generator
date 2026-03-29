@@ -1,10 +1,11 @@
 import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
-import { webhooks } from '@/db/schema/webhooks';
-import { db } from '@/db';
 import { inArray } from 'drizzle-orm';
-import { env } from '@/env';
 import Groq from 'groq-sdk';
+
+import { env } from '@/env';
+import { db } from '@/db';
+import { webhooks } from '@/db/schema/webhooks';
 
 export const generateHandler: FastifyPluginAsyncZod = async (app) => {
   app.post(

@@ -1,1 +1,1 @@
-export * as webhooksList from './webhooks';
+export * from './webhooks';
