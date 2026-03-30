@@ -16,7 +16,22 @@ import { deleteWebhook } from './routes/delete-webhook';
 import { captureWebhook } from './routes/capture-webhook';
 import { generateHandler } from './routes/generate-handler';
 
-const app = fastify().withTypeProvider<ZodTypeProvider>();
+const app = fastify({
+  logger: {
+    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    transport:
+      process.env.NODE_ENV !== 'production'
+        ? {
+            target: 'pino-pretty',
+            options: {
+              colorize: true,
+              translateTime: 'yyyy-mm-dd HH:MM:ss',
+            },
+          }
+        : undefined,
+  },
+}).withTypeProvider<ZodTypeProvider>();
+
 app.setValidatorCompiler(validatorCompiler);
 app.setSerializerCompiler(serializerCompiler);
 
@@ -43,7 +58,25 @@ app.register(deleteWebhook);
 app.register(captureWebhook);
 app.register(generateHandler);
 
-app.listen({ port: env.PORT }).then(() => {
-  console.log('- HTTP Server running on http://localhost:3333');
-  console.log('- Docs available at http://localhost:3333/docs');
-});
+async function start() {
+  try {
+    await app.listen({
+      port: env.PORT,
+      host: '0.0.0.0',
+    });
+
+    app.log.info(
+      {
+        port: env.PORT,
+        env: process.env.NODE_ENV,
+        service: 'webhook-api',
+      },
+      'Server started',
+    );
+  } catch (err) {
+    app.log.error(err);
+    process.exit(1);
+  }
+}
+
+start();

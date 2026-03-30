@@ -107,10 +107,6 @@ function generateStripeWebhook() {
 async function seed() {
   console.log('🌱 Seeding database...');
 
-  if (!process.env.NODE_ENV || process.env.NODE_ENV === 'production') {
-    throw new Error('Seed command cannot be run in production environment.');
-  }
-
   await db.delete(webhooks);
 
   const webhooksData = Array.from({ length: 60 }, () =>
