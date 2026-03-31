@@ -6,7 +6,7 @@
 
 A modern monorepo for building, capturing, and managing webhooks with a **Node.js** API and a **React** frontend. Designed for rapid prototyping, developer-friendly workflows, and a clean, responsive UI.
 
-**Backend:** TypeScript, Express, Drizzle ORM, PostgreSQL  
+**Backend:** TypeScript, Fastify, Drizzle ORM, PostgreSQL  
 **Frontend:** React, Vite, TypeScript
 
 </div>
@@ -29,7 +29,7 @@ A modern monorepo for building, capturing, and managing webhooks with a **Node.j
 | Technology                                         | Purpose                      |
 | -------------------------------------------------- | ---------------------------- |
 | [Node.js](https://nodejs.org/)                     | Backend runtime              |
-| [Express](https://expressjs.com/)                  | API server                   |
+| [Fastify](https://www.fastify.io/)                  | API server                   |
 | [Drizzle ORM](https://orm.drizzle.team/)           | Type-safe database access    |
 | [PostgreSQL](https://www.postgresql.org/)          | Database                     |
 | [React](https://react.dev/)                        | Frontend UI                  |
@@ -54,7 +54,7 @@ A modern monorepo for building, capturing, and managing webhooks with a **Node.j
 ## 📁 Project Structure
 
 ```
-├── api/                # Node.js backend (Express, Drizzle, Postgres)
+├── api/                # Node.js backend (Fastify, Drizzle, Postgres)
 │   ├── src/
 │   │   ├── db/
 │   │   │   ├── migrations/

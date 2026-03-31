@@ -6,7 +6,7 @@
 
 Um monorepo moderno para construir, capturar e gerenciar webhooks com uma API **Node.js** e frontend **React**. Projetado para prototipagem rápida, fluxo de trabalho amigável para desenvolvedores e uma UI limpa e responsiva.
 
-**Backend:** TypeScript, Express, Drizzle ORM, PostgreSQL  
+**Backend:** TypeScript, Fastify, Drizzle ORM, PostgreSQL  
 **Frontend:** React, Vite, TypeScript
 
 </div>
@@ -29,7 +29,7 @@ Um monorepo moderno para construir, capturar e gerenciar webhooks com uma API **
 | Tecnologia                                         | Propósito                          |
 | -------------------------------------------------- | ---------------------------------- |
 | [Node.js](https://nodejs.org/)                     | Runtime do backend                 |
-| [Express](https://expressjs.com/)                  | Servidor de API                    |
+| [Fastify](https://www.fastify.io/)                  | Servidor de API                    |
 | [Drizzle ORM](https://orm.drizzle.team/)           | Acesso ao banco de dados type-safe |
 | [PostgreSQL](https://www.postgresql.org/)          | Banco de dados                     |
 | [React](https://react.dev/)                        | UI do frontend                     |
@@ -116,7 +116,7 @@ pnpm --filter api db:seed
 
 ```sh
 # Iniciar API
-dpnm --filter api dev
+pnpm --filter api dev
 
 # Iniciar Web
 pnpm --filter web dev
