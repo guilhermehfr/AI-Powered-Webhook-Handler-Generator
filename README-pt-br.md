@@ -13,6 +13,8 @@ Um monorepo que simula eventos de webhook do Stripe e usa IA para gerar automati
 
 [Demo](https://webhook-handler-generator.vercel.app/) · [API](https://ai-powered-webhook-handler-generator.onrender.com) · [Reportar Bug](https://github.com/guilhermehfr/AI-Powered-Webhook-Handler-Generator/issues)
 
+> ℹ️ **Nota:** O serviço da demo pode levar cerca de **30 segundos** para iniciar devido ao modo de repouso do plano gratuito da Render.
+
 🌐 _[Read in english](README.md)_
 </div>
 
