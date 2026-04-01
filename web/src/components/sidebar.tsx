@@ -3,15 +3,14 @@ import { WebhooksList } from './webhooks-list';
 import { Suspense } from 'react';
 
 export function Sidebar() {
-  /* Fictionary value to make the component work and responsible in UX/UI terms */
-  const webhooksPathname = 'http://localhost:3333/api/webhooks';
+  const webhooksPathname = 'https://webhook-handler-generator-api.vercel.app/api/webhooks';
 
   return (
     <div className="flex h-screen flex-col">
       <div className="flex items-center justify-between border-b border-zinc-700 px-4 py-5">
         <div className="flex items-baseline">
-          <span className="font-semibold text-zinc-100">weebhook</span>
-          <span className="font-normal text-zinc-400">.inpect</span>
+          <span className="font-semibold text-zinc-100">webhook</span>
+          <span className="font-normal text-zinc-400">.inspect</span>
         </div>
       </div>
 

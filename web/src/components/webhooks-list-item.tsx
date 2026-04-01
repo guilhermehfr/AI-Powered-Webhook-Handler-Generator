@@ -25,7 +25,7 @@ export function WebhooksListItem({
 
   const { mutate: deleteWebhook } = useMutation({
     mutationFn: async (id: string) => {
-      await fetch(`http://localhost:3333/api/webhooks/${id}`, {
+      await fetch(`https://ai-powered-webhook-handler-generator.onrender.com/api/webhooks/${id}`, {
         method: 'DELETE',
       });
     },

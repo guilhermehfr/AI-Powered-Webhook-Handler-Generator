@@ -15,7 +15,7 @@ export function WebhookDetails({ id }: WebhookDetailsProps) {
   const { data } = useSuspenseQuery({
     queryKey: ['webhook', id],
     queryFn: async () => {
-      const response = await fetch(`http://localhost:3333/api/webhooks/${id}`);
+      const response = await fetch(`https://ai-powered-webhook-handler-generator.onrender.com/api/webhooks/${id}`);
       const data = await response.json();
       return webhookDetailSchema.parse(data);
     },
